@@ -1,0 +1,36 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  main:
+    banner_mode: CONSOLE
+  datasource:
+    platform: h2
+    url: jdbc:h2:mem:db;INIT=CREATE SCHEMA IF NOT EXISTS room_booking_test_db\;SET SCHEMA room_booking_test_db;
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    initialize: true
+    continue-on-error: true
+    data: classpath:sql/room_booking_test_db_init_data.sql
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      show_sql: true
+      use_sql_comments: true
+      format_sql: true
+      type: trace
+      #generate-ddl: true
+      ddl-auto: update #create
+    javax:
+      persistence:
+        sharedCache:
+          mode: ALL
+
+hibernate:
+  globally_quoted_identifiers: true
