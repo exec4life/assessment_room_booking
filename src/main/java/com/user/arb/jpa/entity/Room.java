@@ -10,6 +10,7 @@ import java.util.Objects;
 @Table(name = "tbl_room")
 public class Room extends AbstractEntity implements Serializable, Cloneable  {
 
+    @Column(nullable = false, length = 20, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

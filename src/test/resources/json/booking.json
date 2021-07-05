@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1,
+    "Subject": "Bering Sea Gold",
+    "StartTime": "2020-05-02 01:00:00",
+    "EndTime": "2020-05-02 02:30:00",
+    "IsAllDay": false,
+    "IsBlock": false,
+    "IsReadonly": false,
+    "RecurrenceRule": "FREQ=DAILY;INTERVAL=2;COUNT=10",
+    "RoomId": 1,
+    "UserId": 1
+  },
+  {
+    "Id": 2,
+    "Subject": "Bering Sea Gold",
+    "StartTime": "2020-05-03 02:00:00",
+    "EndTime": "2020-05-03 03:00:00",
+    "IsAllDay": false,
+    "IsBlock": false,
+    "IsReadonly": false,
+    "RecurrenceRule": "",
+    "RoomId": 1,
+    "UserId": 1
+  },
+  {
+    "Id": 3,
+    "Subject": "What Happened Next?",
+    "StartTime": "2020-05-04 03:00:00",
+    "EndTime": "2020-05-04 04:30:00",
+    "IsAllDay": false,
+    "IsBlock": false,
+    "IsReadonly": false,
+    "RecurrenceRule": "",
+    "RoomId": 1,
+    "UserId": 1
+  },
+  {
+    "Id": 4,
+    "Subject": "Weekly Planet",
+    "StartTime": "2020-05-05 06:00:00",
+    "EndTime": "2020-05-05 07:30:00",
+    "IsAllDay": false,
+    "IsBlock": false,
+    "IsReadonly": false,
+    "RecurrenceRule": "FREQ=WEEKLY;BYDAY=MO,WE,FR;INTERVAL=1;COUNT=15",
+    "RoomId": 1,
+    "UserId": 1
+  }
+]

@@ -5,6 +5,7 @@ import java.io.Serializable;
 public abstract class AbstractDTO implements Serializable {
 
     private Long id;
+
     private Boolean active = Boolean.FALSE;
 
     public Long getId() {

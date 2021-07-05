@@ -1,5 +1,6 @@
 package com.user.arb.exception;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,7 @@ import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -46,7 +44,11 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
 
             String accept = request.getHeader(HttpHeaders.ACCEPT);
             response.setHeader(HttpHeaders.ACCEPT, accept);
-            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    messageSource.getMessage("system.convert.error",
+                            null,
+                            "Has an internal error",
+                            LocaleContextHolder.getLocale()));
 
             return new ModelAndView();
         } catch (IOException ex) {
@@ -58,8 +60,6 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
     @ResponseBody
     @ExceptionHandler(ArbException.class)
     public ResponseEntity<Error> arbException(HttpServletRequest request, ArbException ex) {
-        LOG.error("ARB-HANDLE EXCEPTION: " + ex.getMessage(), ex);
-
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", ex.getHttpStatus().value());
@@ -72,10 +72,30 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
 
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Error> constraintViolationException(HttpServletRequest request,
+                                                                 ConstraintViolationException ex) {
+        List<String> messages = Arrays.asList(ex.getMessage());
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", new Date());
+        body.put("status", BAD_REQUEST.value());
+        body.put("messages", messages);
+        body.put("path", request.getRequestURI());
+        body.put("message",
+                messageSource.getMessage("system.validation.fields.failed",
+                        null,
+                        "Object fields has conflict in validation rules",
+                        LocaleContextHolder.getLocale()));
+
+        return new ResponseEntity(body, BAD_REQUEST);
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Error> methodArgumentNotValidException(HttpServletRequest request,
                                                                  MethodArgumentNotValidException ex) {
-        LOG.error("ARB-HANDLE EXCEPTION: " + ex.getMessage(), ex);
         List<String> messages = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -88,9 +108,9 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
         body.put("messages", messages);
         body.put("path", request.getRequestURI());
         body.put("message",
-                messageSource.getMessage("system.validation.failed",
+                messageSource.getMessage("system.validation.fields.failed",
                         null,
-                        "",
+                        "Object fields has conflict in validation rules",
                         LocaleContextHolder.getLocale()));
 
         return new ResponseEntity(body, BAD_REQUEST);

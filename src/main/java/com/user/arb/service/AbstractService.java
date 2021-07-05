@@ -16,6 +16,8 @@ public interface AbstractService<E extends AbstractEntity, D extends AbstractDTO
 
     D update(D d);
 
+    void delete(K k);
+
     D active(K k);
 
     D archive(K k);

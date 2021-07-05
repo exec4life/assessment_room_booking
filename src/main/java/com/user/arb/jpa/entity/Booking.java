@@ -1,21 +1,33 @@
 package com.user.arb.jpa.entity;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "tbl_booking")
-public class Booking extends AbstractEntity implements Serializable, Cloneable  {
+public class Booking extends AbstractEntity implements Serializable, Cloneable {
 
-    private String title;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    @Column(nullable = false, length = 50)
+    private String subject;
+
+    private String description;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
+
+    private boolean isAllDay;
+
+    private boolean isReadonly;
+
+    private String recurrenceRule;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
@@ -25,51 +37,63 @@ public class Booking extends AbstractEntity implements Serializable, Cloneable  
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "tbl_booking_weekday",
-            joinColumns = @JoinColumn(name = "weekday_id"),
-            inverseJoinColumns = @JoinColumn(name = "booking_id"))
-    private Set<Weekday> weekdays;
+    @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookingDetail> bookingDetails = new ArrayList<>();
 
-    public String getTitle() {
-        return title;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    public LocalTime getStartTime() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public LocalTime getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
-    public LocalDate getFromDate() {
-        return fromDate;
+    public boolean isAllDay() {
+        return isAllDay;
     }
 
-    public void setFromDate(LocalDate fromDate) {
-        this.fromDate = fromDate;
+    public void setAllDay(boolean allDay) {
+        isAllDay = allDay;
     }
 
-    public LocalDate getToDate() {
-        return toDate;
+    public boolean isReadonly() {
+        return isReadonly;
     }
 
-    public void setToDate(LocalDate toDate) {
-        this.toDate = toDate;
+    public void setReadonly(boolean readonly) {
+        isReadonly = readonly;
+    }
+
+    public String getRecurrenceRule() {
+        return recurrenceRule;
+    }
+
+    public void setRecurrenceRule(String recurrenceRule) {
+        this.recurrenceRule = recurrenceRule;
     }
 
     public Room getRoom() {
@@ -88,12 +112,12 @@ public class Booking extends AbstractEntity implements Serializable, Cloneable  
         this.user = user;
     }
 
-    public Set<Weekday> getWeekdays() {
-        return weekdays;
+    public List<BookingDetail> getBookingDetails() {
+        return bookingDetails;
     }
 
-    public void setWeekdays(Set<Weekday> weekdays) {
-        this.weekdays = weekdays;
+    public void setBookingDetails(List<BookingDetail> bookingDetails) {
+        this.bookingDetails = bookingDetails;
     }
 
     @Override
@@ -106,12 +130,10 @@ public class Booking extends AbstractEntity implements Serializable, Cloneable  
         if (this == obj) return true;
         if (!(obj instanceof Booking)) return false;
         Booking booking = (Booking) obj;
-        return Objects.equals(getTitle(), booking.getTitle())
+        return Objects.equals(getSubject(), booking.getSubject())
                 && Objects.equals(getRoom(), booking.getRoom())
                 && Objects.equals(getStartTime(), booking.getStartTime())
                 && Objects.equals(getEndTime(), booking.getEndTime())
-                && Objects.equals(getFromDate(), booking.getFromDate())
-                && Objects.equals(getToDate(), booking.getToDate())
                 ;
     }
 
@@ -123,7 +145,7 @@ public class Booking extends AbstractEntity implements Serializable, Cloneable  
     @Override
     public String toString() {
         return String.join("#", new String[]{
-                getId().toString(), getTitle(), getActive().toString()
+                getId().toString(), getSubject(), getActive().toString()
         });
     }
 

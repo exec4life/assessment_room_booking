@@ -11,7 +11,6 @@ import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Isolation;
@@ -42,8 +41,6 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
     protected Class<D> dtoClass;
 
     protected JpaRepository currentRepository;
-    protected Converter<E, D> toDtoConverter;
-    protected Converter<D, E> toEntityConverter;
 
     @Autowired
     protected MessageSource messageSource;
@@ -54,40 +51,34 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
         dtoClass = (Class<D>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
 
         this.currentRepository = currentRepository;
-
-        generateConverters();
     }
 
-    protected void generateConverters() {
-        toDtoConverter = (E e) -> {
-            try {
-                D d = dtoClass.newInstance();
-                BeanUtils.copyProperties(e, d);
-                return d;
-            } catch (FatalBeanException | InstantiationException | IllegalAccessException ex) {
-                throw new ArbException(HttpStatus.BAD_REQUEST,
-                        messageSource.getMessage("system.error.can.not.convert.object",
-                                new Object[]{entityClass.getSimpleName(), dtoClass.getSimpleName()},
-                                "Can not convert from Entity to DTO",
-                                LocaleContextHolder.getLocale()),
-                        ex);
-            }
-        };
+    protected D toDtoConvert(E e) {
+        try {
+            D d = dtoClass.newInstance();
+            BeanUtils.copyProperties(e, d);
+            return d;
+        } catch (FatalBeanException | InstantiationException | IllegalAccessException ex) {
+            throw throwConvertObject(dtoClass, entityClass, ex);
+        }
+    }
 
-        toEntityConverter = (D d) -> {
-            try {
-                E e = entityClass.newInstance();
-                BeanUtils.copyProperties(d, e);
-                return e;
-            } catch (FatalBeanException | InstantiationException | IllegalAccessException ex) {
-                throw new ArbException(HttpStatus.BAD_REQUEST,
-                        messageSource.getMessage("system.error.can.not.convert.object",
-                                new Object[]{dtoClass.getSimpleName(), entityClass.getSimpleName()},
-                                "Can not convert from DTO to Entity",
-                                LocaleContextHolder.getLocale()),
-                        ex);
-            }
-        };
+    protected E toEntityConvert(D d) {
+        try {
+            E e = entityClass.newInstance();
+            BeanUtils.copyProperties(d, e);
+            return e;
+        } catch (FatalBeanException | InstantiationException | IllegalAccessException ex) {
+            throw throwConvertObject(entityClass, dtoClass, ex);
+        }
+    }
+
+    protected void toEntityCopy(D d, E e) {
+        try {
+            BeanUtils.copyProperties(d, e);
+        } catch (NullPointerException | FatalBeanException ex) {
+            throw throwConvertObject(dtoClass, entityClass, ex);
+        }
     }
 
     @Override
@@ -95,14 +86,9 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
         Optional<E> optional = currentRepository.findById(k);
 
         if (optional.isPresent()) {
-            return toDtoConverter.convert(optional.get());
+            return toDtoConvert(optional.get());
         } else {
-            throw new ArbException(
-                    HttpStatus.BAD_REQUEST,
-                    messageSource.getMessage("system.entity.not.exist",
-                            new Object[]{entityClass.getSimpleName(), k},
-                            "This entity is not existed",
-                            LocaleContextHolder.getLocale()));
+            throw throwNonExistEntity(entityClass, k);
         }
     }
 
@@ -111,7 +97,7 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
         List<E> list = currentRepository.findAll();
 
         if (!CollectionUtils.isEmpty(list)) {
-            return list.stream().map(e -> toDtoConverter.convert(e)).collect(toList());
+            return list.stream().map(e -> toDtoConvert(e)).collect(toList());
         }
         return new ArrayList<D>();
     }
@@ -123,7 +109,9 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
             rollbackForClassName = "IllegalArgumentException",
             noRollbackForClassName = "EntityExistsException")
     public D create(D d) {
-        return toDtoConverter.convert((E) currentRepository.save(toEntityConverter.convert(d)));
+        E e = toEntityConvert(d);
+        e.setId(null);
+        return toDtoConvert((E) currentRepository.save(e));
     }
 
     @Override
@@ -133,7 +121,14 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
             rollbackForClassName = "IllegalArgumentException",
             noRollbackForClassName = "EntityNotFoundException")
     public D update(D d) {
-        return toDtoConverter.convert((E) currentRepository.save(toEntityConverter.convert(d)));
+        Optional<E> optionalE = currentRepository.findById(d.getId());
+
+        if (optionalE.isPresent()) {
+            toEntityCopy(d, optionalE.get());
+            return toDtoConvert((E) currentRepository.save(optionalE.get()));
+        } else {
+            throw throwNonExistEntity(entityClass, d);
+        }
     }
 
     @Override
@@ -142,10 +137,27 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
             noRollbackFor = EntityExistsException.class,
             rollbackForClassName = "IllegalArgumentException",
             noRollbackForClassName = "EntityNotFoundException")
-    public D active(K k) {EntityExistsException x;
+    public void delete(K k) {
+        Optional<E> optional = currentRepository.findById(k);
+
+        if (optional.isPresent()) {
+            currentRepository.delete(optional.get());
+        } else {
+            throw throwNonExistEntity(entityClass, k);
+        }
+    }
+
+    @Override
+    @Transactional(
+            rollbackFor = IllegalArgumentException.class,
+            noRollbackFor = EntityExistsException.class,
+            rollbackForClassName = "IllegalArgumentException",
+            noRollbackForClassName = "EntityNotFoundException")
+    public D active(K k) {
+        EntityExistsException x;
         E e = get(k);
         e.setActive(Boolean.TRUE);
-        return toDtoConverter.convert((E) currentRepository.save(e));
+        return toDtoConvert((E) currentRepository.save(e));
     }
 
     @Override
@@ -157,7 +169,7 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
     public D archive(K k) {
         E e = get(k);
         e.setActive(Boolean.FALSE);
-        return toDtoConverter.convert((E) currentRepository.save(e));
+        return toDtoConvert((E) currentRepository.save(e));
     }
 
     protected E get(K k) {
@@ -166,13 +178,28 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
         if (optional.isPresent()) {
             return optional.get();
         } else {
-            throw new ArbException(
-                    HttpStatus.BAD_REQUEST,
-                    messageSource.getMessage("system.entity.not.exist",
-                            new Object[]{entityClass.getSimpleName(), k},
-                            "This entity is not existed",
-                            LocaleContextHolder.getLocale()));
+            throw throwNonExistEntity(entityClass, k);
         }
+    }
+
+    protected ArbException throwNonExistEntity(Class<?> clazz, Object obj) {
+        return new ArbException(
+                HttpStatus.BAD_REQUEST,
+                messageSource.getMessage("entity.validation.not.exist",
+                        new Object[]{entityClass.getSimpleName(), obj},
+                        "This {0}[{1}] is not existed",
+                        LocaleContextHolder.getLocale()));
+    }
+
+    protected ArbException throwConvertObject(Class<?> srcClazz, Class<?> disClazz, Throwable ex) {
+        LOG.error(String.format("Can not convert from %s to %s",
+                srcClazz.getSimpleName(), disClazz.getSimpleName()), ex);
+        return new ArbException(HttpStatus.INTERNAL_SERVER_ERROR,
+                messageSource.getMessage("system.convert.error",
+                        null,
+                        "Has an internal error",
+                        LocaleContextHolder.getLocale()),
+                ex);
     }
 
 }

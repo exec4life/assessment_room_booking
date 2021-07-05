@@ -10,9 +10,15 @@ import java.util.Objects;
 @Table(name = "tbl_user")
 public class User extends AbstractEntity implements Serializable, Cloneable  {
 
+    @Column(nullable = false, length = 24, unique = true, updatable = false)
     private String username;
+
+    @Column(nullable = false, length = 100)
     private String password;
+
+    @Column(nullable = false, length = 50, unique = true)
     private String email;
+
     private String firstName;
     private String lastName;
 

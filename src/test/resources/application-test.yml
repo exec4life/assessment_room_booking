@@ -34,3 +34,5 @@ spring:
 
 hibernate:
   globally_quoted_identifiers: true
+  ejb:
+    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
