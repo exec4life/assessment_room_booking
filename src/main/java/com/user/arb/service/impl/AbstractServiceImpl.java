@@ -127,7 +127,7 @@ public abstract class AbstractServiceImpl<E extends AbstractEntity, D extends Ab
             toEntityCopy(d, optionalE.get());
             return toDtoConvert((E) currentRepository.save(optionalE.get()));
         } else {
-            throw throwNonExistEntity(entityClass, d);
+            throw throwNonExistEntity(entityClass, d.getId());
         }
     }
 

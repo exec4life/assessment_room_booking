@@ -27,7 +27,7 @@ public class RoomServiceImpl extends AbstractServiceImpl<Room, RoomDTO, Long> im
             throw new ArbException(HttpStatus.BAD_REQUEST,
                     messageSource.getMessage("room.validation.name.conflict",
                             new Object[] { roomDTO.getName() },
-                            "The room's name [{0}] is existed",
+                            "The room's name `{0}` is existed",
                             LocaleContextHolder.getLocale()));
         }
         return super.create(roomDTO);
@@ -39,7 +39,7 @@ public class RoomServiceImpl extends AbstractServiceImpl<Room, RoomDTO, Long> im
             throw new ArbException(HttpStatus.BAD_REQUEST,
                     messageSource.getMessage("room.validation.name.conflict",
                             new Object[] { roomDTO.getName() },
-                            "The room's name [{0}] is existed",
+                            "The room`s name [{0}] is existed",
                             LocaleContextHolder.getLocale()));
         }
         return super.update(roomDTO);

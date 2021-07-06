@@ -16,6 +16,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByRoom(Long roomId);
 
     @Query("SELECT DISTINCT(b) FROM Booking b JOIN b.bookingDetails bd JOIN b.room r JOIN b.user u " +
-            "WHERE u.username LIKE ?1 AND r.id = ?2 AND bd.startTime >= ?3 AND bd.startTime <= ?4")
+            "WHERE u.username LIKE ?1 AND r.id = ?2 AND bd.startTime >= ?3 AND bd.startTime <= ?4 AND b.active = 1")
     Set<Booking> search(String username, Long roomId, LocalDateTime startTime, LocalDateTime endTime);
 }

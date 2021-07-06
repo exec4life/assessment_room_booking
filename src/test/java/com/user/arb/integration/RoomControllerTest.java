@@ -142,7 +142,7 @@ public class RoomControllerTest extends AbstractTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.active").value(false))
+                .andExpect(jsonPath("$.Active").value(false))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -166,7 +166,7 @@ public class RoomControllerTest extends AbstractTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.active").value(true))
+                .andExpect(jsonPath("$.Active").value(true))
                 .andDo(MockMvcResultHandlers.print());
     }
 

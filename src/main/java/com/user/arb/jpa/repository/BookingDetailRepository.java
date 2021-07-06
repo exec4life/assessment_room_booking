@@ -13,11 +13,17 @@ import java.util.List;
 public interface BookingDetailRepository extends JpaRepository<BookingDetail, Long> {
 
     @Query("SELECT bd FROM BookingDetail bd JOIN bd.booking b JOIN b.room r " +
-            "WHERE r.id = ?1 AND bd.startTime >= ?2 AND bd.startTime < ?3")
+            " WHERE r.id = ?1" +
+            " AND ((bd.startTime >= ?2 AND bd.startTime <= ?3) " +
+            " OR (bd.endTime >= ?2 AND bd.endTime <= ?3)" +
+            " OR (bd.startTime <= ?2 AND bd.endTime >= ?3))")
     List<BookingDetail> findByDateRangeOfRoom(Long roomId, LocalDateTime startTime, LocalDateTime endTime);
 
     @Query("SELECT bd FROM BookingDetail bd JOIN bd.booking b JOIN b.room r " +
-            "WHERE r.id = ?1 AND b.id != ?2 AND bd.startTime >= ?3 AND bd.startTime < ?4 AND b.active = 1")
+            " WHERE r.id = ?1 AND b.id != ?2" +
+            " AND ((bd.startTime >= ?3 AND bd.startTime <= ?4) " +
+            " OR (bd.endTime >= ?3 AND bd.endTime <= ?4)" +
+            " OR (bd.startTime <= ?3 AND bd.endTime >= ?4))")
     List<BookingDetail> findByDateRangeOfRoomAndNotInBooking(Long roomId, Long bookingId, LocalDateTime startTime, LocalDateTime endTime);
 
     void deleteByBooking(Booking booking);

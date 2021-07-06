@@ -1,0 +1,496 @@
+{
+	"info": {
+		"_postman_id": "7e696ff8-c64e-4268-991f-c85a20de16da",
+		"name": "AssessmentRoomBooking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "room",
+			"item": [
+				{
+					"name": "Room list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/room/list",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get 1 room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/room/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new 1 room",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"Asia 4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/room",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new 1 room has existed name",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"Asia 4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/room",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit room",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"Asia 03\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/room/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit room has existed name",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"Asia 2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/room/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive room",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"Asia 03\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/room/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active room",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"Asia 03\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/room/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"room",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "User list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/user/list",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"user",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "booking",
+			"item": []
+		},
+		{
+			"name": "Create a new booking",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1\",\r\n    \"StartTime\": \"2021-07-05 09:32:00\",\r\n    \"EndTime\": \"2021-07-05 10:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new other booking",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 2\",\r\n    \"StartTime\": \"2021-07-05 11:32:00\",\r\n    \"EndTime\": \"2021-07-05 12:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new booking has conflict",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": true,\r\n    \"Subject\": \"Schedule 3\",\r\n    \"StartTime\": \"2021-07-05 12:00:00\",\r\n    \"EndTime\": \"2021-07-05 13:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit the booking",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schdule 1\",\r\n    \"StartTime\": \"2021-07-05 08:30:00\",\r\n    \"EndTime\": \"2021-07-05 09:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit the booking has conflict",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1\",\r\n    \"StartTime\": \"2021-07-05 11:45:00\",\r\n    \"EndTime\": \"2021-07-05 12:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get one booking",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/api/booking/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get list booking of a room",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/api/booking/list/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking",
+						"list",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search booking",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"StartTime\": \"2020-07-08 08:31:00\",\r\n    \"EndTime\": \"2021-07-10 19:31:00\",\r\n    \"Username\": \"a\",\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete booking",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"StartTime\": \"2020-07-08 08:31:00\",\r\n    \"EndTime\": \"2021-07-10 19:31:00\",\r\n    \"Username\": \"a\",\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/booking/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"booking",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

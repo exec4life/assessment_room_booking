@@ -41,14 +41,12 @@ public class BookingDTO extends AbstractDTO {
         return super.getId();
     }
 
-    @Override
     @JsonProperty("IsBlock")
-    public Boolean getActive() {
+    public Boolean getIsBlock() {
         return !super.getActive();
     }
 
-    @Override
-    public void setActive(Boolean active) {
+    public void setIsBlock(Boolean active) {
         super.setActive(!active);
     }
 
