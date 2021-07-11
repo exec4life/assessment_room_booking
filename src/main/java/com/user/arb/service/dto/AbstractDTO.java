@@ -10,7 +10,7 @@ public abstract class AbstractDTO implements Serializable {
     private Long id;
 
     @JsonProperty("Active")
-    private Boolean active = Boolean.FALSE;
+    private Boolean active = Boolean.TRUE;
 
     public Long getId() {
         return id;

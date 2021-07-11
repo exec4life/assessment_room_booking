@@ -13,6 +13,9 @@ public class Room extends AbstractEntity implements Serializable, Cloneable  {
     @Column(nullable = false, length = 20, unique = true)
     private String name;
 
+    @Column(nullable = false, length = 20, unique = true)
+    private String color;
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
@@ -22,6 +25,14 @@ public class Room extends AbstractEntity implements Serializable, Cloneable  {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public List<Booking> getBookings() {

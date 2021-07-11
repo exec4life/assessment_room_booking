@@ -25,7 +25,7 @@ public class RoomServiceImpl extends AbstractServiceImpl<Room, RoomDTO, Long> im
     public RoomDTO create(RoomDTO roomDTO) {
         if (roomRepository.findByName(roomDTO.getName()).isPresent()) {
             throw new ArbException(HttpStatus.BAD_REQUEST,
-                    messageSource.getMessage("room.validation.name.conflict",
+                    messageSource.getMessage("room.validation.name.existed",
                             new Object[] { roomDTO.getName() },
                             "The room's name `{0}` is existed",
                             LocaleContextHolder.getLocale()));
@@ -37,7 +37,7 @@ public class RoomServiceImpl extends AbstractServiceImpl<Room, RoomDTO, Long> im
     public RoomDTO update(RoomDTO roomDTO) {
         if (roomRepository.findByNameInOthers(roomDTO.getName(), roomDTO.getId()).isPresent()) {
             throw new ArbException(HttpStatus.BAD_REQUEST,
-                    messageSource.getMessage("room.validation.name.conflict",
+                    messageSource.getMessage("room.validation.name.existed",
                             new Object[] { roomDTO.getName() },
                             "The room`s name [{0}] is existed",
                             LocaleContextHolder.getLocale()));

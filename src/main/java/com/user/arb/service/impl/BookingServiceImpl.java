@@ -1,5 +1,6 @@
 package com.user.arb.service.impl;
 
+import com.user.arb.config.ArbConfiguration;
 import com.user.arb.controller.request.BookingSearchRequest;
 import com.user.arb.exception.ArbException;
 import com.user.arb.jpa.entity.Booking;
@@ -12,6 +13,7 @@ import com.user.arb.jpa.repository.RoomRepository;
 import com.user.arb.jpa.repository.UserRepository;
 import com.user.arb.service.BookingService;
 import com.user.arb.service.dto.BookingDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
@@ -23,37 +25,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO, Long> implements BookingService {
 
+    public static final int MAX_INTERVAL = 365;
     private BookingRepository bookingRepository;
     private BookingDetailRepository bookingDetailRepository;
     private RoomRepository roomRepository;
     private UserRepository userRepository;
+    private ArbConfiguration configuration;
 
     @Autowired
     public BookingServiceImpl(BookingRepository bookingRepository,
                               BookingDetailRepository bookingDetailRepository,
                               RoomRepository roomRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              ArbConfiguration configuration) {
         super(bookingRepository);
         this.bookingRepository = bookingRepository;
         this.bookingDetailRepository = bookingDetailRepository;
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
-
+        this.configuration = configuration;
     }
 
     @Override
     protected BookingDTO toDtoConvert(Booking booking) {
         BookingDTO bookingDTO = super.toDtoConvert(booking);
 
+        bookingDTO.setColor(booking.getRoom().getColor());
         bookingDTO.setRoomId(booking.getRoom().getId());
         bookingDTO.setUserId(booking.getUser().getId());
 
@@ -108,6 +112,12 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
     }
 
     @Override
+    public List<BookingDTO> findByRoomIdIn(List<Long> ids) {
+        return bookingRepository.findByRoomIdIn(ids).stream()
+                .map(e -> toDtoConvert(e)).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(
             rollbackFor = IllegalArgumentException.class,
             noRollbackFor = EntityExistsException.class,
@@ -127,7 +137,7 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
                 newBookingDetails.get(newBookingDetails.size() - 1).getEndTime()
         );
 
-        checkConflictBooking(newBookingDetails, existedBookingDetails);
+        checkConflictBooking(newBookingDetails, existedBookingDetails, bookingDTO.getTimeZone());
         return toDtoConvert(bookingRepository.save(booking));
     }
 
@@ -156,7 +166,7 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
                 newBookingDetails.get(newBookingDetails.size() - 1).getEndTime()
         );
 
-        checkConflictBooking(newBookingDetails, bookingDetails);
+        checkConflictBooking(newBookingDetails, bookingDetails, bookingDTO.getTimeZone());
         return toDtoConvert(bookingRepository.save(booking));
     }
 
@@ -171,7 +181,7 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
 
     private List<BookingDetail> generateBookingDetails(Booking booking) {
         List<BookingDetail> bookingDetails = new ArrayList<>();
-        if (booking.isAllDay() || booking.getRecurrenceRule().isEmpty()) {
+        if (StringUtils.isEmpty(booking.getRecurrenceRule())) {
             bookingDetails.add(new BookingDetail(booking.getStartTime(), booking.getEndTime(), booking));
         } else {
             try {
@@ -191,16 +201,25 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
                 RecurrenceRuleIterator startItr = startRecurrenceRule.iterator(startDateTime);
                 RecurrenceRuleIterator endItr = endRecurrenceRule.iterator(endDateTime);
 
+                int maxInterval = MAX_INTERVAL;
+                if (configuration.getMaxScheduleInterval() != null || configuration.getMaxScheduleInterval() > 0) {
+                    maxInterval = configuration.getMaxScheduleInterval();
+                }
+
+                int count = 0;
                 while (startItr.hasNext() && endItr.hasNext()) {
                     bookingDetails.add(
                             new BookingDetail(
                                     LocalDateTime.ofInstant(Instant.ofEpochMilli(startItr.nextDateTime().getTimestamp()),
-                                            TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId()),
+                                            ZoneOffset.UTC),
                                     LocalDateTime.ofInstant(Instant.ofEpochMilli(endItr.nextDateTime().getTimestamp()),
-                                            TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId()),
+                                            ZoneOffset.UTC),
                                     booking
                             )
                     );
+                    if (++count > maxInterval) {
+                        break;
+                    }
                 }
             } catch (InvalidRecurrenceRuleException e) {
                 throw new ArbException(HttpStatus.BAD_REQUEST,
@@ -214,28 +233,41 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
         return bookingDetails;
     }
 
-    private void checkConflictBooking(final List<BookingDetail> newBookingDetails, final List<BookingDetail> existedBookingDetails) {
+    private void checkConflictBooking(final List<BookingDetail> newBookingDetails, final List<BookingDetail> existedBookingDetails, TimeZone timeZone) {
         if (newBookingDetails.size() > 0 && existedBookingDetails.size() > 0) {
             for (BookingDetail newDetail : newBookingDetails) {
                 for (BookingDetail existedDetail : existedBookingDetails) {
-                    if ((newDetail.getStartTime().plusSeconds(1).isAfter(existedDetail.getStartTime())
-                            && newDetail.getStartTime().isBefore(existedDetail.getEndTime()))
-                        || (newDetail.getEndTime().plusSeconds(1).isAfter(existedDetail.getStartTime())
-                            && newDetail.getEndTime().plusSeconds(-1).isBefore(existedDetail.getEndTime()))) {
+                    // {[]} || {[}] || [{]}
+                    // Case 1: new time range is a boundary of existed time range
+                    if ((newDetail.getStartTime().plusSeconds(-1).isBefore(existedDetail.getStartTime())
+                            && newDetail.getEndTime().plusMinutes(1).isAfter(existedDetail.getEndTime()))
+                            // Case 2: new end time is in existed time range
+                            || (newDetail.getEndTime().isAfter(existedDetail.getStartTime())
+                            && newDetail.getEndTime().plusMinutes(-1).isBefore(existedDetail.getEndTime()))
+                            // Case 3: new start time is in existed time range
+                            || (newDetail.getStartTime().plusMinutes(1).isAfter(existedDetail.getStartTime())
+                            && newDetail.getStartTime().isBefore(existedDetail.getEndTime()))) {
                         Booking errorBooking = existedDetail.getBooking();
+
                         throw new ArbException(HttpStatus.BAD_REQUEST,
-                                messageSource.getMessage("booking.validation.conflict",
-                                        new Object[] {
+                                messageSource.getMessage("booking.validation.mixed",
+                                        new Object[]{
                                                 errorBooking.getSubject(),
-                                                errorBooking.getStartTime(),
-                                                errorBooking.getEndTime()
+                                                getLocalTime(errorBooking.getStartTime(), timeZone),
+                                                getLocalTime(errorBooking.getEndTime(), timeZone)
                                         },
-                                        "Schedule has conflict with [{0} / {1} / {2}]",
+                                        "Schedule `{0}` [{1} - {2}] has picked this range",
                                         LocaleContextHolder.getLocale()));
                     }
                 }
             }
         }
+    }
+
+    private LocalTime getLocalTime(LocalDateTime time, TimeZone timeZone) {
+        ZonedDateTime zonedUTC = time.atZone(ZoneOffset.UTC);
+        ZonedDateTime zonedIST = zonedUTC.withZoneSameInstant(timeZone.toZoneId());
+        return zonedIST.toLocalTime();
     }
 
     private void checkBookingTime(BookingDTO bookingDTO) {
@@ -245,7 +277,7 @@ public class BookingServiceImpl extends AbstractServiceImpl<Booking, BookingDTO,
                             null,
                             "The start time must be less than end time at less 15 minutes",
                             LocaleContextHolder.getLocale())
-                    );
+            );
         }
     }
 }

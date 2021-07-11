@@ -72,10 +72,19 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
 
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler({ConstraintViolationException.class, javax.validation.ConstraintViolationException.class})
     public ResponseEntity<Error> constraintViolationException(HttpServletRequest request,
-                                                                 ConstraintViolationException ex) {
-        List<String> messages = Arrays.asList(ex.getMessage());
+                                                                 Exception ex) {
+        List<String> messages;
+        if (ex instanceof javax.validation.ConstraintViolationException) {
+            javax.validation.ConstraintViolationException except = (javax.validation.ConstraintViolationException) ex;
+            messages = except.getConstraintViolations().stream().map(e -> {
+                String msgTemp = e.getMessage().replace("{", "").replace("}", "");
+                return messageSource.getMessage(msgTemp, null, msgTemp, LocaleContextHolder.getLocale());
+            }).collect(Collectors.toList());
+        } else {
+            messages = Arrays.asList(ex.getMessage());
+        }
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
@@ -85,7 +94,7 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
         body.put("message",
                 messageSource.getMessage("system.validation.fields.failed",
                         null,
-                        "Object fields has conflict in validation rules",
+                        "Some fields are failed in validation rules",
                         LocaleContextHolder.getLocale()));
 
         return new ResponseEntity(body, BAD_REQUEST);
@@ -110,7 +119,7 @@ public class ArbHandlerExceptionResolver extends AbstractHandlerExceptionResolve
         body.put("message",
                 messageSource.getMessage("system.validation.fields.failed",
                         null,
-                        "Object fields has conflict in validation rules",
+                        "Some fields are failed in validation rules",
                         LocaleContextHolder.getLocale()));
 
         return new ResponseEntity(body, BAD_REQUEST);

@@ -1,3 +1,4 @@
 spring:
   profiles:
-    active: dev # spring.profiles.active=dev
+    active: dev
+    # env var: spring.profiles.active=stag

@@ -15,6 +15,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b JOIN b.room r WHERE r.id = ?1 AND b.active = 1")
     List<Booking> findByRoom(Long roomId);
 
+    List<Booking> findByRoomIdIn(List<Long> ids);
+
     @Query("SELECT DISTINCT(b) FROM Booking b JOIN b.bookingDetails bd JOIN b.room r JOIN b.user u " +
             "WHERE u.username LIKE ?1 AND r.id = ?2 AND bd.startTime >= ?3 AND bd.startTime <= ?4 AND b.active = 1")
     Set<Booking> search(String username, Long roomId, LocalDateTime startTime, LocalDateTime endTime);
