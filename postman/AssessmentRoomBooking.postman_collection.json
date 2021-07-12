@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Name\" : \"Asia 4\"\r\n}",
+							"raw": "{\r\n    \"Name\" : \"Asia 6\",\r\n    \"Color\": \"red\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -111,7 +111,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"Name\" : \"Asia 03\"\r\n}",
+							"raw": "{\r\n    \"Name\" : \"Asia 03\",\r\n    \"Color\": \"Yellow\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -248,17 +248,17 @@
 			]
 		},
 		{
-			"name": "booking",
+			"name": "schedule",
 			"item": []
 		},
 		{
-			"name": "Create a new booking",
+			"name": "Create a new schedule",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1\",\r\n    \"StartTime\": \"2021-07-05 09:32:00\",\r\n    \"EndTime\": \"2021-07-05 10:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1\",\r\n    \"StartTime\": \"2021-07-04T01:32:00.000Z\",\r\n    \"EndTime\": \"2021-07-04T02:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=1;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -266,27 +266,27 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking",
+					"raw": "localhost:8000/api/schedule",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking"
+						"schedule"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Create a new other booking",
+			"name": "Create a new schedule 1.2",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 2\",\r\n    \"StartTime\": \"2021-07-05 11:32:00\",\r\n    \"EndTime\": \"2021-07-05 12:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1.2\",\r\n    \"StartTime\": \"2021-07-05T01:32:00.000Z\",\r\n    \"EndTime\": \"2021-07-05T12:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -294,27 +294,27 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking",
+					"raw": "localhost:8000/api/schedule",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking"
+						"schedule"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Create a new booking has conflict",
+			"name": "Create a new schedule 2.1",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"IsBlock\": true,\r\n    \"Subject\": \"Schedule 3\",\r\n    \"StartTime\": \"2021-07-05 12:00:00\",\r\n    \"EndTime\": \"2021-07-05 13:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 2.1\",\r\n    \"StartTime\": \"2021-07-08T03:00:00.000Z\",\r\n    \"EndTime\": \"2021-07-08T03:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=1;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -322,27 +322,167 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking",
+					"raw": "localhost:8000/api/schedule",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking"
+						"schedule"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Edit the booking",
+			"name": "Create a new schedule 2.2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 2.2\",\r\n    \"StartTime\": \"2021-07-08T01:00:00.000Z\",\r\n    \"EndTime\": \"2021-07-08T01:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=1;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/schedule",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new schedule 3.1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 3.1\",\r\n    \"StartTime\": \"2021-07-07T16:00:00.000Z\",\r\n    \"EndTime\": \"2021-07-07T18:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/schedule",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new schedule 3.2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 3.2\",\r\n    \"StartTime\": \"2021-07-07T01:00:00.000Z\",\r\n    \"EndTime\": \"2021-07-07T01:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=1;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/schedule",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new other schedule",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 2\",\r\n    \"StartTime\": \"2021-07-05T11:32:00.000Z\",\r\n    \"EndTime\": \"2021-07-05T12:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/schedule",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new schedule has conflict",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IsBlock\": true,\r\n    \"Subject\": \"Schedule 3\",\r\n    \"StartTime\": \"2021-07-05T12:00:00.000Z\",\r\n    \"EndTime\": \"2021-07-05T13:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/schedule",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit the schedule",
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schdule 1\",\r\n    \"StartTime\": \"2021-07-05 08:30:00\",\r\n    \"EndTime\": \"2021-07-05 09:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schdule 1\",\r\n    \"StartTime\": \"2021-07-05T08:30:00.000Z\",\r\n    \"EndTime\": \"2021-07-05T09:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -350,14 +490,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking/1",
+					"raw": "localhost:8000/api/schedule/1",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking",
+						"schedule",
 						"1"
 					]
 				}
@@ -365,13 +505,13 @@
 			"response": []
 		},
 		{
-			"name": "Edit the booking has conflict",
+			"name": "Edit the schedule has conflict",
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1\",\r\n    \"StartTime\": \"2021-07-05 11:45:00\",\r\n    \"EndTime\": \"2021-07-05 12:30:00\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": true,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
+					"raw": "{\r\n    \"IsBlock\": false,\r\n    \"Subject\": \"Schedule 1\",\r\n    \"StartTime\": \"2021-07-05T11:45:00.000Z\",\r\n    \"EndTime\": \"2021-07-05T12:30:00.000Z\",\r\n    \"RecurrenceRule\": \"FREQ=DAILY;INTERVAL=2;COUNT=10\",\r\n    \"IsAllDay\": false,\r\n    \"IsReadonly\": false,\r\n    \"UserId\": 1,\r\n    \"RoomId\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -379,14 +519,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking/1",
+					"raw": "localhost:8000/api/schedule/1",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking",
+						"schedule",
 						"1"
 					]
 				}
@@ -394,19 +534,19 @@
 			"response": []
 		},
 		{
-			"name": "Get one booking",
+			"name": "Get one schedule",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8000/api/booking/1",
+					"raw": "localhost:8000/api/schedule/1",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking",
+						"schedule",
 						"1"
 					]
 				}
@@ -414,34 +554,13 @@
 			"response": []
 		},
 		{
-			"name": "Get list booking of a room",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8000/api/booking/list/1",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"booking",
-						"list",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Search booking",
+			"name": "Search schedule",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"StartTime\": \"2020-07-08 08:31:00\",\r\n    \"EndTime\": \"2021-07-10 19:31:00\",\r\n    \"Username\": \"a\",\r\n    \"RoomId\": 1\r\n}",
+					"raw": "{\r\n    \"StartTime\": \"2020-06-08T08:31:00.000Z\",\r\n    \"EndTime\": \"2022-09-10T19:31:00.000Z\",\r\n    \"Username\": \"admin\",\r\n    \"RoomId\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -449,14 +568,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking/search",
+					"raw": "localhost:8000/api/schedule/search",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking",
+						"schedule",
 						"search"
 					]
 				}
@@ -464,7 +583,7 @@
 			"response": []
 		},
 		{
-			"name": "Delete booking",
+			"name": "Delete schedule",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -478,14 +597,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8000/api/booking/2",
+					"raw": "localhost:8000/api/schedule/2",
 					"host": [
 						"localhost"
 					],
 					"port": "8000",
 					"path": [
 						"api",
-						"booking",
+						"schedule",
 						"2"
 					]
 				}

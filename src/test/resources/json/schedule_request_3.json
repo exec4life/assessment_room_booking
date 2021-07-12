@@ -1,0 +1,17 @@
+{
+  "changed": [
+    {
+      "Subject": "New schedule 3",
+      "StartTime": "2021-07-12T06:00:00.000Z",
+      "EndTime": "2021-07-12T07:00:00.000Z",
+      "IsAllDay": false,
+      "StartTimezone": null,
+      "EndTimezone": null,
+      "RecurrenceRule": null,
+      "RoomId": 1,
+      "UserId": 1,
+      "Id": 1
+    }
+  ],
+  "RequestType": "eventChange"
+}

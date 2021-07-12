@@ -1,6 +1,6 @@
 package com.user.arb.integration;
 
-import com.user.arb.core.AbstractTest;
+import com.user.arb.core.AbstractIntegrationTest;
 import com.user.arb.service.RoomService;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RoomControllerTest extends AbstractTest {
+public class RoomControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -71,7 +71,8 @@ public class RoomControllerTest extends AbstractTest {
             throws Exception {
 
         String requestJson = "{\n" +
-                "    \"Name\": \"New room\"\n" +
+                "    \"Name\": \"New room\",\n" +
+                "    \"Color\": \"Red\"\n" +
                 "  }";
 
         mvc.perform(MockMvcRequestBuilders.post("/api/room")
@@ -88,7 +89,8 @@ public class RoomControllerTest extends AbstractTest {
             throws Exception {
 
         String requestJson = "{\n" +
-                "    \"Name\": \"Asia 1\"\n" +
+                "    \"Name\": \"Asia 1\",\n" +
+                "    \"Color\": \"Red\"\n" +
                 "  }";
 
         mvc.perform(MockMvcRequestBuilders.post("/api/room")
@@ -105,7 +107,8 @@ public class RoomControllerTest extends AbstractTest {
             throws Exception {
 
         String requestJson = "{\n" +
-                "    \"Name\": \"New room name\"\n" +
+                "    \"Name\": \"New room name\",\n" +
+                "    \"Color\": \"Blue\"\n" +
                 "  }";
 
         mvc.perform(MockMvcRequestBuilders.put("/api/room/1")
@@ -122,7 +125,8 @@ public class RoomControllerTest extends AbstractTest {
             throws Exception {
 
         String requestJson = "{\n" +
-                "    \"Name\": \"Asia 2\"\n" +
+                "    \"Name\": \"Asia 2\",\n" +
+                "    \"Color\": \"Red\"\n" +
                 "  }";
 
         mvc.perform(MockMvcRequestBuilders.put("/api/room/1")

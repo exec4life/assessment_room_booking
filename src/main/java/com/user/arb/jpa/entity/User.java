@@ -23,7 +23,7 @@ public class User extends AbstractEntity implements Serializable, Cloneable  {
     private String lastName;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Booking> bookings = new ArrayList<>();
+    private List<Schedule> schedules = new ArrayList<>();
 
     public String getUsername() {
         return username;
@@ -65,12 +65,12 @@ public class User extends AbstractEntity implements Serializable, Cloneable  {
         this.lastName = lastName;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
+    public List<Schedule> getBookings() {
+        return schedules;
     }
 
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
+    public void setBookings(List<Schedule> schedules) {
+        this.schedules = schedules;
     }
 
     @Override

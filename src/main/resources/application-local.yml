@@ -1,0 +1,51 @@
+server:
+  port: 8000
+#  contextPath: /
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  main:
+    banner_mode: CONSOLE
+
+  datasource:
+    platform: h2
+    url: jdbc:h2:mem:db;INIT=CREATE SCHEMA IF NOT EXISTS arb_schedule_db\;SET SCHEMA arb_schedule_db;
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    initialize: true
+    continue-on-error: true
+    data: classpath:sql/arb_schedule_db_init_data.sql
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      show_sql: true
+      use_sql_comments: true
+      format_sql: true
+      type: trace
+      #generate-ddl: true
+      ddl-auto: update #create
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
+
+hibernate:
+  enable_lazy_load_no_trans: true
+  globally_quoted_identifiers: true
+  ejb:
+    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+com:
+  user:
+    arb:
+      maxScheduleInterval: 50

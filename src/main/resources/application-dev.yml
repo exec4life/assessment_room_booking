@@ -7,27 +7,34 @@ server:
 spring:
   main:
     banner_mode: CONSOLE
+
   datasource:
-    platform: h2
-    url: jdbc:h2:mem:db;INIT=CREATE SCHEMA IF NOT EXISTS arb_schedule_db\;SET SCHEMA arb_schedule_db;
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+    platform: org.hibernate.dialect.MySQL5Dialect
+    url: jdbc:mysql://127.0.0.1:3306/arb_schedule_db?useUnicode=yes&characterEncoding=UTF-8
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: admin
     initialize: true
+    initialization-mode: always
     continue-on-error: true
     data: classpath:sql/arb_schedule_db_init_data.sql
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5Dialect
     show-sql: true
     defer-datasource-initialization: true
     hibernate:
-      show_sql: true
+      show_sql: false
       use_sql_comments: true
       format_sql: true
       type: trace
-      #generate-ddl: true
-      ddl-auto: update #create
+#      generate-ddl: true
+      ddl-auto: update # update/create
+      cache:
+        use_second_level_cache: true
+        use_query_cache: true
+        region:
+          factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
     javax:
       persistence:
         sharedCache:
@@ -35,10 +42,8 @@ spring:
 
 hibernate:
   globally_quoted_identifiers: true
-  ejb:
-    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
 
 com:
   user:
     arb:
-      maxScheduleInterval: 365
+      maxScheduleInterval: 100

@@ -1,6 +1,6 @@
 package com.user.arb.integration;
 
-import com.user.arb.core.AbstractTest;
+import com.user.arb.core.AbstractIntegrationTest;
 import com.user.arb.service.UserService;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserControllerTest extends AbstractTest {
+public class UserControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mvc;
 

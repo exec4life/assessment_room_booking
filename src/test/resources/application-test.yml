@@ -1,14 +1,15 @@
 server:
-  error:
+  error: # https://stackoverflow.com/questions/63730436/spring-boot-and-spring-security-cant-send-error-with-custom-message-in-authent
     include-message: always
     include-binding-errors: always
 
 spring:
   main:
     banner_mode: CONSOLE
+
   datasource:
     platform: h2
-    url: jdbc:h2:mem:db;INIT=CREATE SCHEMA IF NOT EXISTS room_booking_test_db\;SET SCHEMA room_booking_test_db;
+    url: jdbc:h2:mem:db;INIT=CREATE SCHEMA IF NOT EXISTS arb_schedule_db_test\;SET SCHEMA arb_schedule_db_test;
     driverClassName: org.h2.Driver
     username: sa
     password:
@@ -27,12 +28,8 @@ spring:
       type: trace
       #generate-ddl: true
       ddl-auto: update #create
-    javax:
-      persistence:
-        sharedCache:
-          mode: ALL
 
-hibernate:
-  globally_quoted_identifiers: true
-  ejb:
-    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+com:
+  user:
+    arb:
+      maxScheduleInterval: 10
